@@ -6,10 +6,6 @@
 
 class CBixi
 {
-    public:
-        static constexpr size_t c_indicatorPin     = 13;
-        static constexpr size_t c_indicatorDelayMs = 1000;
-
     public: // singleton
         static CBixi& Instance();
         CBixi();
