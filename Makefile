@@ -8,13 +8,8 @@
 #       \/         \/                    \/
 #
 # make all = Make software.
-#
 # make clean = Clean out built project files.
-#
-# make program = Download the hex file to the device
-#
-# make debug = Start either simulavr or avarice as specified for debugging, 
-#              with avr-gdb or avr-insight as the front end for debugging.
+# make upload = Upload the hex file to the device
 
 TARGET = bixi
 TEENSY_MCU = mk66fx1m0  # 3.6
@@ -97,10 +92,17 @@ OBJS := $(foreach src,$(SOURCES), $(BUILDDIR)/$(src))
 
 begin:
 	@echo
-	@echo -------- Makefile begin .. $(shell date) --------
+	@echo " ___.   .__       .__   _______________  ________  "
+	@echo " \_ |__ |__|__  __|__| /   __   \   _  \/   __   \\"
+	@echo "  | __ \|  \  \/  /  | \____    /  /_\  \____    / "
+	@echo "  | \_\ \  |>    <|  |    /    /\  \_/   \ /    /  "
+	@echo "  |___  /__/__/\_ \__|   /____/  \_____  //____/   "
+	@echo "      \/         \/                    \/          "
+	@echo ============================================================================
+	@echo ============= Compile starting .. $(shell date) ==============
 
 end:
-	@echo -------- Makefile end .. $(shell date) --------
+	@echo ============= Compile complete .. $(shell date) ==============
 	@echo
 
 all: begin hex end
@@ -110,12 +112,16 @@ build: $(TARGET).elf
 hex: $(TARGET).hex
 
 post_compile: $(TARGET).hex
-	@$(abspath $(TOOLSPATH))/teensy_post_compile -file="$(basename $<)" -path=$(CURDIR) -tools="$(abspath $(TOOLSPATH))"
+	@echo "Informing the Teensy Loader of freshly compiled code..."
+	@$(abspath $(TOOLSPATH))/teensy_post_compile -file="$(basename $<)" \
+		-path=$(CURDIR) \
+		-tools="$(abspath $(TOOLSPATH))"
 
 reboot:
+	@echo "Rebooting Teensy..."
 	@-$(abspath $(TOOLSPATH))/teensy_reboot
 
-upload: post_compile reboot
+upload: begin post_compile reboot end
 
 $(BUILDDIR)/%.o: %.c
 	@echo -e "[CC]\t$<"
@@ -145,6 +151,6 @@ $(TARGET).elf: $(OBJS) $(LDSCRIPT)
 -include $(OBJS:.o=.d)
 
 clean:
-	@echo Cleaning project...
-	@rm -rf "$(BUILDDIR)"
-	@rm -f "$(TARGET).elf" "$(TARGET).hex"
+	@echo "Deleting files:"
+	@rm -rfv "$(BUILDDIR)"
+	@rm -fv "$(TARGET).elf" "$(TARGET).hex"
