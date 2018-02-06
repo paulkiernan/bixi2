@@ -1,0 +1,6 @@
+[submodule "libraries/OctoWS2811"]
+	path = libraries/OctoWS2811
+	url = https://github.com/PaulStoffregen/OctoWS2811.git
+[submodule "libraries/FastLED"]
+	path = libraries/FastLED
+	url = https://github.com/FastLED/FastLED

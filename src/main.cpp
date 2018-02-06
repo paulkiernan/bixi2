@@ -1,12 +1,24 @@
 #include "WProgram.h"
+#include "logging.h"
+#include "bixi.h"
+
 
 extern "C" int main(void) {
 
-    pinMode(13, OUTPUT);
-    while (1) {
+    CLogging::Init();
+    CBixi::Instance();
+    CLogging::log("CBixi::CBixi: Bixi is initialized...");
+
+    while (!CBixi::Instance().ShuttingDown()) {
+        CBixi::Instance().Continue();
+        CLogging::log("Heartbeat");
         digitalWriteFast(13, HIGH);
-        delay(500);
+        delay(100);
         digitalWriteFast(13, LOW);
-        delay(500);
+        delay(100);
+        digitalWriteFast(13, HIGH);
+        delay(100);
+        digitalWriteFast(13, LOW);
+        delay(900);
     }
 }

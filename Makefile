@@ -22,9 +22,6 @@ BUILDDIR = $(abspath $(CURDIR)/build)
 
 OPTIONS = -DUSB_SERIAL -DLAYOUT_US_ENGLISH
 
-MSG_FLASH = Creating load file for Flash:
-
-
 # CPPFLAGS = compiler options for C and C++
 CPPFLAGS = \
 	-Wall \
@@ -36,7 +33,8 @@ CPPFLAGS = \
 	-nostdlib \
 	-MMD \
 	$(OPTIONS) \
-	-DTEENSYDUINO=124 \
+	-DARDUINO=1 \
+	-DTEENSYDUINO=181 \
 	-DF_CPU=$(TEENSY_CORE_SPEED) \
 	-Isrc \
 	-I$(COREPATH) \
@@ -85,9 +83,16 @@ CPP_FILES := $(wildcard src/*.cpp)
 INO_FILES := $(wildcard src/*.ino)
 
 # include paths for libraries
-L_INC := $(foreach lib,$(filter %/, $(wildcard $(LIBRARYPATH)/*/)), -I$(lib))
+L_INC = $(foreach lib,$(filter %/, $(wildcard $(LIBRARYPATH)/*/)), -I$(lib))
 
-SOURCES := $(C_FILES:.c=.o) $(CPP_FILES:.cpp=.o) $(INO_FILES:.ino=.o) $(TC_FILES:.c=.o) $(TCPP_FILES:.cpp=.o) $(LC_FILES:.c=.o) $(LCPP_FILES:.cpp=.o)
+SOURCES := \
+	$(C_FILES:.c=.o) \
+	$(CPP_FILES:.cpp=.o) \
+	$(INO_FILES:.ino=.o) \
+	$(TC_FILES:.c=.o) \
+	$(TCPP_FILES:.cpp=.o) \
+	$(LC_FILES:.c=.o) \
+	$(LCPP_FILES:.cpp=.o)
 OBJS := $(foreach src,$(SOURCES), $(BUILDDIR)/$(src))
 
 begin:
@@ -113,7 +118,8 @@ hex: $(TARGET).hex
 
 post_compile: $(TARGET).hex
 	@echo "Informing the Teensy Loader of freshly compiled code..."
-	@$(abspath $(TOOLSPATH))/teensy_post_compile -file="$(basename $<)" \
+	@$(abspath $(TOOLSPATH))/teensy_post_compile \
+		-file="$(basename $<)" \
 		-path=$(CURDIR) \
 		-tools="$(abspath $(TOOLSPATH))"
 
