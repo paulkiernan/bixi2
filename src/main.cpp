@@ -14,11 +14,6 @@ volatile unsigned long blinkCount = 0; // use volatile for shared variables
 
 
 void heartbeatLED() {
-
-    char logString[128];
-    sprintf(logString, "main::heartbeatLED: LED blink count: %u", blinkCount);
-    CLogging::log(logString);
-
     if (ledState == LOW) {
         ledState = HIGH;
         blinkCount = blinkCount + 1;  // increase when LED turns on
@@ -35,9 +30,6 @@ extern "C" int main(void) {
     CLogging::Init();
     pinMode(HEARTBEAT_PIN, OUTPUT);
     heartbeatTimer.begin(heartbeatLED, 150000);  // blinkLED to run every 0.15 seconds
-    CBixi::Instance();
-    CLogging::log("CBixi::CBixi: Bixi is initialized...");
-
 
     while (!CBixi::Instance().ShuttingDown()) {
         CBixi::Instance().Continue();
