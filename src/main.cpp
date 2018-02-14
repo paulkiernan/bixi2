@@ -26,8 +26,17 @@ void heartbeatLED() {
 
 extern "C" int main(void) {
 
+
     delay(1000);
     CLogging::Init();
+    //CLogging::log(
+        //" ___.   .__       .__   _______________  ________  "
+        //" \_ |__ |__|__  __|__| /   __   \   _  \/   __   \\"
+        //"  | __ \|  \  \/  /  | \____    /  /_\  \____    / "
+        //"  | \_\ \  |>    <|  |    /    /\  \_/   \ /    /  "
+        //"  |___  /__/__/\_ \__|   /____/  \_____  //____/   "
+        //"      \/         \/                    \/          "
+    //);
     pinMode(HEARTBEAT_PIN, OUTPUT);
     heartbeatTimer.begin(heartbeatLED, 150000);  // blinkLED to run every 0.15 seconds
 

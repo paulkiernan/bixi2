@@ -19,33 +19,35 @@ LIBRARYPATH = libraries
 TOOLSPATH = $(CURDIR)/tools
 COMPILERPATH = $(TOOLSPATH)/arm/bin
 BUILDDIR = $(abspath $(CURDIR)/build)
+COMPILER_OPTIMIZATION = Os  # Embedded systems love space
 
 OPTIONS = -DUSB_SERIAL -DLAYOUT_US_ENGLISH
 
 # CPPFLAGS = compiler options for C and C++
 CPPFLAGS = \
-	-Wall \
-	-g \
-	-Os \
-	-mthumb \
-	-ffunction-sections \
-	-fdata-sections \
-	-nostdlib \
-	-MMD \
-	$(OPTIONS) \
-	-DARDUINO=1 \
-	-DTEENSYDUINO=181 \
+	-DARDUINO=10805 \
 	-DF_CPU=$(TEENSY_CORE_SPEED) \
-	-Isrc \
-	-I$(COREPATH) \
+	-DTEENSYDUINO=141 \
 	-D__MK66FX1M0__\
+	-I$(COREPATH) \
+	-Isrc \
+	-MMD \
+	-$(COMPILER_OPTIMIZATION) \
+	-Wall \
+	-fdata-sections \
+	-ffunction-sections \
+	-fsingle-precision-constant \
+	-g \
 	-mcpu=cortex-m4 \
 	-mfloat-abi=hard \
-	-mfpu=fpv4-sp-d16
+	-mfpu=fpv4-sp-d16 \
+	-mthumb \
+	-nostdlib \
+	$(OPTIONS)
 
 # compiler options for C++ only
 CXXFLAGS = \
-	-std=gnu++0x \
+	-std=gnu++14 \
 	-felide-constructors \
 	-fno-exceptions \
 	-fno-rtti
@@ -56,7 +58,7 @@ CFLAGS =
 # linker options
 LDSCRIPT = $(COREPATH)/mk66fx1m0.ld
 LDFLAGS = \
-	-Os \
+	-$(COMPILER_OPTIMIZATION) \
 	-Wl,--gc-sections \
 	-mthumb \
 	-mcpu=cortex-m4 \
