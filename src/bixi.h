@@ -22,6 +22,6 @@ class CBixi
         bool   m_shutting_down = false;
         bool   m_indicatorOn = false;
         size_t s_iteration    = 0;
-        uint16_t XY(uint8_t x, uint8_t y);
-        void DrawOneFrame(byte, int8_t, int8_t);
+        uint16_t XY(uint8_t, uint8_t);
+        void DrawOneFrame(byte);
 };

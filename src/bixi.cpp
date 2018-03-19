@@ -8,13 +8,15 @@
 #define CHIPSET        WS2811
 #define COLOR_ORDER    GRB
 #define LED_PIN        3
-#define kMatrixWidth   12
-#define kMatrixHeight  12
+#define kMatrixWidth   144
+#define kMatrixHeight  1
 #define NUM_LEDS (kMatrixWidth * kMatrixHeight)
 
 // Global variables
 CRGB leds_plus_safety_pixel[ NUM_LEDS + 1];
 CRGB* const leds( leds_plus_safety_pixel + 1);
+uint8_t gHue = 0;
+unsigned int microseconds = 50;
 
 
 uint16_t CBixi::XY( uint8_t x, uint8_t y)
@@ -74,18 +76,10 @@ CBixi::~CBixi()
 }
 
 
-void CBixi::DrawOneFrame(byte startHue8,
-                         int8_t yHueDelta8,
-                         int8_t xHueDelta8)
+void CBixi::DrawOneFrame(byte color)
 {
-    byte lineStartHue = startHue8;
-    for( byte y = 0; y < kMatrixHeight; y++) {
-        lineStartHue += yHueDelta8;
-        byte pixelHue = lineStartHue;
-        for( byte x = 0; x < kMatrixWidth; x++) {
-            pixelHue += xHueDelta8;
-            leds[this->XYsafe(x, y)] = CHSV( pixelHue, 255, 255);
-        }
+    for( byte y = 0; y < NUM_LEDS; y++) {
+        leds[y] = CHSV( color, 255, 255);
     }
 }
 
@@ -107,13 +101,17 @@ void CBixi::Continue()
 {
     s_iteration++;
 
+    uint8_t gHueDelta = 3;
+    this->DrawOneFrame(gHue);
+    gHue += gHueDelta;
+
     uint32_t ms = millis();
-    int32_t yHueDelta32 = ((int32_t)cos16( ms * (27/1) ) * (350 / kMatrixWidth));
-    int32_t xHueDelta32 = ((int32_t)cos16( ms * (39/1) ) * (310 / kMatrixHeight));
-    this->DrawOneFrame( ms / 65536, yHueDelta32 / 32768, xHueDelta32 / 32768);
+    uint32_t waitTime = 50;
 
     FastLED.setBrightness(BRIGHTNESS);
     FastLED.show();
+
+    while (millis() - ms < waitTime);
 
     this->logFrameRate();
 }
